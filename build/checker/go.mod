@@ -1,10 +1,12 @@
 module checker
 
-go 1.19
+go 1.21
+
+toolchain go1.22.3
 
 require (
 	github.com/blang/semver v3.5.1+incompatible
-	github.com/diginfra/testing v0.0.0-20230929141322-214d1fbb9327
+	github.com/diginfra/testing v0.0.0-20240608114809-5eba8003bd4d
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.3
@@ -27,9 +29,9 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.7.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/tools v0.1.12 // indirect
+	golang.org/x/mod v0.8.0 // indirect
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/sys v0.13.0 // indirect
+	golang.org/x/tools v0.6.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
