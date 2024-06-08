@@ -1,0 +1,6 @@
+approvers:
+  - nxpkg
+  - khulnasoft-bot
+emeritus_approvers:
+  - gitworkflows
+  - fortishield

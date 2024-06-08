@@ -1,0 +1,17 @@
+name: Yamllint Github Actions
+on: 
+  pull_request:
+    branches: 
+      - main
+
+jobs: 
+  lintDiginfraRules: 
+    name: Yamllint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: yaml-lint
+        uses: ibiqlik/action-yamllint@v3
+        with: 
+          file_or_dir: rules/*.yaml

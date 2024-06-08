@@ -1,0 +1,6 @@
+site_name: diginfra Rules
+site_url: https://github.com/diginfra/rules
+nav:
+    - Home: index.md
+
+theme: material

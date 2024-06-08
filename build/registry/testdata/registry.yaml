@@ -1,0 +1,31 @@
+rulesfiles:
+  - name: diginfra
+    description: Diginfra rules that are loaded by default
+    authors: The Diginfra Authors
+    contact: https://diginfra.org/community
+    maintainers:
+      - name: The Diginfra Authors
+        email: cncf-diginfra-dev@lists.cncf.io
+    path: rules/diginfra_rules.yaml
+    license: apache-2.0
+    keywords:
+      - diginfra
+    url: https://github.com/diginfra/rules/blob/main/rules/diginfra_rules.yaml
+    signature:
+      cosign:
+        certificate-oidc-issuer: https://token.actions.githubusercontent.com
+        certificate-identity-regexp: https://github.com/diginfra/rules/
+  - name: applications
+    description: Application rules
+    authors: The Diginfra Authors
+    contact: https://diginfra.org/community
+    maintainers:
+      - name: The Diginfra Authors
+        email: cncf-diginfra-dev@lists.cncf.io
+    path: rules/application_rules.yaml
+    url: https://github.com/diginfra/rules/blob/main/rules/application_rules.yaml
+    license: apache-2.0
+    signature:
+      cosign:
+        certificate-oidc-issuer: https://token.actions.githubusercontent.com
+        certificate-identity-regexp: https://github.com/diginfra/rules/

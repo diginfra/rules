@@ -1,0 +1,77 @@
+name: Release Rulesfile
+
+on:
+  push:
+    tags:
+      # potential semver
+      - '[a-z]*[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  release-rulesfile:
+    runs-on: ubuntu-latest
+
+    env:
+      OCI_REGISTRY: ghcr.io
+
+      AWS_S3_BUCKET: diginfra-distribution
+      AWS_S3_PREFIX: rules
+      AWS_S3_REGION: eu-west-1
+
+    permissions:
+      # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+      id-token: write
+      contents: read
+      packages: write
+
+    steps:
+
+      # Get rules repository
+      - name: Checkout Rules
+        uses: actions/checkout@v4
+
+      # Get registry artifact tool
+      - name: Setup Golang
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: build/registry/go.mod
+
+      - name: Build registry artifact tool
+        working-directory: build/registry
+        run: go build -o rules-registry ./...
+
+      - name: Get lowercase OCI repo prefix
+        run: |
+          echo "OCI_REPO_PREFIX=ghcr.io/${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
+
+      - name: Upload OCI artifacts to GitHub packages
+        id: oci_build
+        env:
+          REGISTRY_USER: ${{ github.repository_owner }}
+          REGISTRY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO_URL: ${{ github.server_url }}/${{ github.repository }}.git
+
+        # uses OCI_REPO_PREFIX environment variable
+        run: >-
+          echo "ARTIFACT_REPO_DIGEST=$(
+            build/registry/rules-registry push-to-oci registry.yaml ${{ github.ref_name }}
+          )" >> $GITHUB_OUTPUT
+
+      # Create a signature of the rules artifact as OCI artifact
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.5.0
+
+      - name: Login with cosign
+        run: cosign login $OCI_REGISTRY --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sign the images with GitHub OIDC Token
+        run: cosign sign --yes ${{ steps.oci_build.outputs.ARTIFACT_REPO_DIGEST }}
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: "arn:aws:iam::292999226676:role/terraform-20230120142903096000000002"
+          aws-region: ${{ env.AWS_S3_REGION }}
+
+      - name: Upload files to S3
+        # uses AWS_S3_BUCKET, AWS_S3_PREFIX, AWS_S3_REGION environment variables
+        run: build/registry/rules-registry upload-to-s3 registry.yaml ${{ github.ref_name }}
